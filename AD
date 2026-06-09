@@ -1,0 +1,143 @@
+    font-size: 12px;
+}
+
+th, td {
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background: rgba(0,0,0,0.3);
+}
+
+/* FILTER */
+.filters input {
+    margin-bottom: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>📊 Productivity Dashboard</header>
+
+<div class="container">
+
+<!-- FORM -->
+<div class="form">
+<h3>New Case Entry</h3>
+
+<input id="agent" placeholder="Agent Name">
+
+<select id="license">
+<option>License KGC</option>
+<option>TOBIQUE</option>
+<option>OTHER</option>
+</select>
+
+<select id="brand">
+<option>STAKES</option>
+<option>STAKE7</option>
+<option>CM</option>
+<option>RANT</option>
+<option>WOOP</option>
+<option>LOCO</option>
+</select>
+
+<input id="playerId" placeholder="Player ID / Transaction ID">
+
+<select id="payment">
+<option>BankTransfer</option>
+<option>CC</option>
+<option>CoinsPaid</option>
+</select>
+
+<select id="procedure">
+<option>Approved</option>
+<option>Declined</option>
+<option>OnHold</option>
+<option>Check Old WD's</option>
+</select>
+
+<textarea id="note" placeholder="Note"></textarea>
+
+<button onclick="addCase()">+ Add Case</button>
+</div>
+
+<!-- TABLE -->
+<div class="table">
+<h3>All Cases</h3>
+
+<div class="filters">
+<input id="filterAgent" placeholder="Filter by Agent" oninput="renderTable()">
+</div>
+
+<table>
+<thead>
+<tr>
+<th>Agent</th>
+<th>License</th>
+<th>Brand</th>
+<th>Player ID</th>
+<th>Payment</th>
+<th>Procedure</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody id="tableBody"></tbody>
+</table>
+
+</div>
+
+</div>
+
+<script>
+
+let data = JSON.parse(localStorage.getItem("cases")) || [];
+
+function addCase() {
+    let obj = {
+        agent: document.getElementById("agent").value,
+        license: document.getElementById("license").value,
+        brand: document.getElementById("brand").value,
+        playerId: document.getElementById("playerId").value,
+        payment: document.getElementById("payment").value,
+        procedure: document.getElementById("procedure").value,
+        note: document.getElementById("note").value
+    };
+
+    data.push(obj);
+    localStorage.setItem("cases", JSON.stringify(data));
+
+    renderTable();
+}
+
+function renderTable() {
+    let tbody = document.getElementById("tableBody");
+    tbody.innerHTML = "";
+
+    let filter = document.getElementById("filterAgent").value.toLowerCase();
+
+    data.forEach(item => {
+        if (filter && !item.agent.toLowerCase().includes(filter)) return;
+
+        tbody.innerHTML += `
+        <tr>
+            <td>${item.agent}</td>
+            <td>${item.license}</td>
+            <td>${item.brand}</td>
+            <td>${item.playerId}</td>
+            <td>${item.payment}</td>
+            <td>${item.procedure}</td>
+            <td>${item.note}</td>
+        </tr>`;
+    });
+}
+
+renderTable();
+
+</script>
+
+</body>
+</html>
